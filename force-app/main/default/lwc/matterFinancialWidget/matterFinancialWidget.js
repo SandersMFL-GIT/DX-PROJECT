@@ -1,17 +1,17 @@
 import { LightningElement, api, wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 
-// Matter fields (still needed for Retainer + Account)
+// Matter fields
 import ACCOUNT_ID_FIELD         from '@salesforce/schema/Matters__c.Account__c';
 import RETAINER_AMOUNT_FIELD    from '@salesforce/schema/Matters__c.Retainer_Amount__c';
 
-// Apex: fetch the TS_Finance_Widget__c row for this Matter
+// Apex
 import getWidgetForMatter from '@salesforce/apex/TSFinanceWidgetController.getWidgetForMatter';
 
 const MATTER_FIELDS = [ACCOUNT_ID_FIELD, RETAINER_AMOUNT_FIELD];
 
 export default class MatterFinancialWidget extends LightningElement {
-    @api recordId; // Matter Id
+    @api recordId;
 
     // sources
     matter;
@@ -34,7 +34,6 @@ export default class MatterFinancialWidget extends LightningElement {
             this.hasError = true;
             this.errorMessage = 'Error loading Matter: ' + JSON.stringify(error);
             this.matter = undefined;
-            // eslint-disable-next-line no-console
             console.error('wiredMatter error', error);
         } else if (data) {
             this.matter = data;
@@ -52,7 +51,6 @@ export default class MatterFinancialWidget extends LightningElement {
             this.hasError = true;
             this.errorMessage = 'Error loading TS Finance Widget: ' + JSON.stringify(error);
             this.widget = undefined;
-            // eslint-disable-next-line no-console
             console.error('wiredWidget error', error);
         } else if (data) {
             this.widget = data;
@@ -61,7 +59,6 @@ export default class MatterFinancialWidget extends LightningElement {
     }
 
     /* ------------------ Raw values ------------------ */
-    // Widget fields
     get trustBalance() {
         return Number(this.widget?.Timesolv_Trust_Balance__c || 0);
     }
@@ -82,7 +79,6 @@ export default class MatterFinancialWidget extends LightningElement {
         return this.worked - this.wip;
     }
 
-    // Matter field
     get retainerAmount() {
         return Number(getFieldValue(this.matter, RETAINER_AMOUNT_FIELD) || 0);
     }
@@ -95,36 +91,30 @@ export default class MatterFinancialWidget extends LightningElement {
         return diff > 0 ? diff : 0;
     }
 
-    // === Action bar values ===
     get payToMaintainRetainer() { return this.retainerShortfall; }
 
-    // Total Balance Due = WIP + shortfall
     get totalBalanceDue() { 
         return this.chargesToCoverNow + this.retainerShortfall; 
     }
 
-    // Credit when retainer fully funded and Trust exceeds charges
-    get creditAvailable() {
-        if (this.trustBalance >= this.retainerAmount) {
-            const extra = this.trustBalance - this.chargesToCoverNow;
-            return extra > 0 ? extra : 0;
-        }
-        return 0;
+    /* ------------------ Action bar bindings ------------------ */
+    
+    get showTotalPotentialDue() {
+        const trustIsLow = this.trustBalance < this.retainerAmount;
+        const hasWip = this.wip > 0;
+        return trustIsLow && hasWip;
     }
 
-    /* ------------------ Action bar bindings ------------------ */
-    get hasCredit() { return this.creditAvailable > 0; }
     get payToMaintainRetainerFormatted() { return this.formatCurrency(this.payToMaintainRetainer); }
-    get totalCreditAvailableFormatted() { return this.formatCurrency(this.creditAvailable); }
     get formattedTotalBalanceDue() { return this.formatCurrency(this.totalBalanceDue); }
 
     /* ------------------ Summary box bindings ------------------ */
+    // SIMPLIFIED: These no longer check for credit.
     get trustVsWipLabel() {
-        return this.hasCredit ? 'Total Credit Available' : 'Total Balance Due';
+        return 'Total Balance Due';
     }
     get formattedTrustVsWip() {
-        const v = this.hasCredit ? this.creditAvailable : this.totalBalanceDue;
-        return this.formatCurrency(v);
+        return this.formatCurrency(this.totalBalanceDue);
     }
 
     /* ------------------ Formatting ------------------ */
@@ -137,6 +127,5 @@ export default class MatterFinancialWidget extends LightningElement {
     get formattedWorked()          { return this.formatCurrency(this.worked); }
     get formattedBilled()          { return this.formatCurrency(this.billed); }
 
-    // Debug (optional)
     get debugAccountIdValue() { return this.debugAccountId; }
 }

@@ -67,15 +67,18 @@
                                     <span class="slds-text-heading_medium">{payToMaintainRetainerFormatted}</span>
                                 </div>
                             </div>
-                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
-                                <div class="slds-box slds-grid slds-grid_align-spread slds-p-around_small">
-                                    <div>
-                                        <div class="slds-text-title_caps" style="line-height: 1.2;">TOTAL POTENTIAL</div>
-                                        <div class="slds-text-title_caps" style="line-height: 1.2;">DUE</div>
+                            
+                            <template lwc:if={showTotalPotentialDue}>
+                                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                    <div class="slds-box slds-grid slds-grid_align-spread slds-p-around_small">
+                                        <div>
+                                            <div class="slds-text-title_caps" style="line-height: 1.2;">TOTAL POTENTIAL</div>
+                                            <div class="slds-text-title_caps" style="line-height: 1.2;">DUE</div>
+                                        </div>
+                                        <span class="slds-text-heading_medium">{formattedTotalBalanceDue}</span>
                                     </div>
-                                    <span class="slds-text-heading_medium">{formattedTotalBalanceDue}</span>
                                 </div>
-                            </div>
+                            </template>
                         </div>
                     </div>
                 </template>
