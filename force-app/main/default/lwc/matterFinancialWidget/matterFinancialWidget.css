@@ -1,0 +1,57 @@
+.widget-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.07);
+    padding: 1.5rem 1.5rem 1.2rem 1.5rem;
+    min-width: 320px;
+    max-width: 370px;
+    margin: 0 auto;
+}
+
+.widget-header {
+    margin-bottom: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 8px;
+    text-align: left;
+}
+
+.widget-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2e2e2e;
+    letter-spacing: 0.01em;
+}
+
+.widget-content {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.widget-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.99rem;
+    padding: 2px 0;
+}
+
+.widget-row.total {
+    border-top: 1.5px solid #dedede;
+    margin-top: 10px;
+    padding-top: 8px;
+    font-size: 1.07rem;
+}
+
+.label {
+    color: #616161;
+}
+
+.value {
+    font-weight: 500;
+    color: #333;
+}
+.value.total {
+    font-size: 1.09rem;
+    font-weight: 700;
+    color: #0052cc;
+}
