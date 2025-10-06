@@ -2,7 +2,6 @@
  * TS_TrustBalanceSync_Batch
  *
  * Synchronizes trust balance information from TimeSolv into the TS_Finance_Widget__c object.
- * This version includes robust error logging and final counts for reliability and easier debugging.
  *
  * NOTE: This class makes one API call per record, which can be slow for large data volumes.
  *
@@ -66,7 +65,6 @@ public with sharing class TS_TrustBalanceSync_Batch implements Database.Batchabl
                 }
 
             } catch (Exception e) {
-                // --- FIX: Replaced e.getClass().getName() with e.getTypeName() ---
                 System.debug(LoggingLevel.ERROR, 'An unexpected error occurred for Matter ID ' + m.Id +
                              '. Error: ' + e.getTypeName() + ' - ' + e.getMessage());
                 totalErrors++;
@@ -82,15 +80,14 @@ public with sharing class TS_TrustBalanceSync_Batch implements Database.Batchabl
                     Database.Error err = upsertResults[i].getErrors()[0];
                     System.debug(LoggingLevel.ERROR, 'DML Error on Matter_Id__c ' + widgetsToUpsert[i].Matter_Id__c + 
                                  ': ' + err.getMessage() + ' (' + err.getStatusCode() + ')');
-                    totalSuccess--; // It was counted as a success, but failed DML, so decrement.
-                    totalErrors++;  // And increment the error count.
+                    totalSuccess--; 
+                    totalErrors++;  
                 }
             }
         }
     }
 
     public void finish(Database.BatchableContext bc) {
-        // --- ADDED: Final summary of totals ---
         System.debug('--- TS_TrustBalanceSync_Batch FINISHED ---');
         System.debug('Total records successfully processed: ' + totalSuccess);
         System.debug('Total records with errors: ' + totalErrors);

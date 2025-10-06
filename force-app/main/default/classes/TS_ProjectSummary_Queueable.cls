@@ -14,10 +14,10 @@ public with sharing class TS_ProjectSummary_Queueable implements Queueable, Data
     // --- State passed between chained jobs ---
     private final Map<String, Id> matterByKey;
     private final Integer pageNum;
-    private final Integer totalProcessedSoFar; // Running total
+    private final Integer totalProcessedSoFar; 
 
     // --- Hardcoded request controls ---
-    private static final String  ORDER_BY   = 'Id';
+    private static final String  ORDER_BY   = '';
     private static final Boolean SORT_ASC   = false;
     private static final Integer PAGE_SIZE  = 200;
 
@@ -42,11 +42,11 @@ public with sharing class TS_ProjectSummary_Queueable implements Queueable, Data
         ]) {
             initialMatterMap.put(norm(m.Matter_ID_Full__c), m.Id);
         }
-        startJob(initialMatterMap); // Calls the private method
+        startJob(initialMatterMap); 
     }
 
     // This new @TestVisible method allows our test to bypass the SOQL query above
-    // and provide its own map, just like the original test did.
+    
     @TestVisible
     private static void startJob(Map<String, Id> mattersToProcess) {
         if (!mattersToProcess.isEmpty()) {

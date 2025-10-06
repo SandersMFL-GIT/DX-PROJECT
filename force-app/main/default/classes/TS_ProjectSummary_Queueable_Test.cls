@@ -29,7 +29,6 @@ private class TS_ProjectSummary_Queueable_Test {
     @IsTest
     static void test_Queueable_Upserts_Widget_From_ProjectSummary() {
         // --- 1. Setup Test Data ---
-        // We create all the necessary related records first.
         Account client = new Account(
             RecordTypeId = SObjectType.Account.getRecordTypeInfosByDeveloperName().get('PersonAccount').getRecordTypeId(),
             LastName     = 'Yanez',
@@ -43,7 +42,7 @@ private class TS_ProjectSummary_Queueable_Test {
         MFL_Office__c office = new MFL_Office__c(Name = 'Main Office');
         insert office;
 
-        // Create the Matter record. We don't set the read-only formula field.
+        // Create the Matter record.
         Matters__c matter = new Matters__c(
             Name              = 'IRM Yanez, Hilary',    
             Status__c         = 'Open',
@@ -59,8 +58,6 @@ private class TS_ProjectSummary_Queueable_Test {
         Test.setMock(HttpCalloutMock.class, new ProjectSummaryMock());
 
         // --- 2. Manually Prepare the Data Map ---
-        // This is the same principle as the original test. We create the
-        // map ourselves to control the data used by the job.
         String normKey = '12345-001';
         Map<String, Id> matterMap = new Map<String, Id>{
             normKey => matter.Id
